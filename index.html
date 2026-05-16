@@ -576,7 +576,7 @@
   <div class="scanlines" aria-hidden="true"></div>
   <div class="floating-code" id="floatingCode" aria-hidden="true"></div>
 
-  <div class="boot-screen" id="bootScreen" role="dialog" aria-modal="true" tabindex="-1" aria-live="polite" aria-labelledby="bootTitle">
+  <div class="boot-screen" id="bootScreen" role="dialog" aria-modal="true" tabindex="-1" aria-live="polite" aria-labelledby="bootTitle" aria-describedby="countdown">
     <div class="boot-terminal">
       <div class="boot-title" id="bootTitle">[ KIRLINGER_SYS v2026 ] BOOTING SECURITY INTERFACE...</div>
       <div class="boot-lines" id="bootLines"></div>
@@ -594,7 +594,7 @@
         <span class="pill">AI Core: Online</span>
         <span class="pill">Threat Level: Zero</span>
       </div>
-      <div class="clock" id="liveClock">--:--:--</div>
+      <div class="clock" id="liveClock" aria-live="off">--:--:--</div>
     </header>
 
     <section class="hero" id="hero">
@@ -664,7 +664,7 @@
     <footer>Cyber Birthday Interface • 2026 Developer Edition</footer>
   </main>
 
-  <audio id="cyberAudio" preload="none"></audio>
+  <audio id="cyberAudio" preload="none" aria-label="Background cyber music player"></audio>
 
   <script>
     // Boot sequence and intro timing
@@ -856,8 +856,10 @@
 
     // Floating code symbols layer
     const floatingCode = document.getElementById("floatingCode");
+    const FLOATING_CODE_COUNT = 26;
+    const CONFETTI_COUNT = 130;
     const symbols = ["<AI>", "0xFF", "sudo", "SSH", "NMAP", "ML", "API", "JSON", "TCP", "{ }", "#define"];
-    for (let i = 0; i < 26; i++) {
+    for (let i = 0; i < FLOATING_CODE_COUNT; i++) {
       const s = document.createElement("span");
       s.textContent = symbols[Math.floor(Math.random() * symbols.length)];
       s.style.left = `${Math.random() * 100}%`;
@@ -881,7 +883,7 @@
 
     function cyberBlast() {
       const colors = ["#52ff8f", "#42b6ff", "#b95bff", "#ffffff"];
-      for (let i = 0; i < 130; i++) {
+      for (let i = 0; i < CONFETTI_COUNT; i++) {
         const bit = document.createElement("div");
         bit.className = "confetti";
         bit.style.left = `${50 + (Math.random() - 0.5) * 14}%`;
