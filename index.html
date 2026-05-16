@@ -576,7 +576,7 @@
   <div class="scanlines" aria-hidden="true"></div>
   <div class="floating-code" id="floatingCode" aria-hidden="true"></div>
 
-  <div class="boot-screen" id="bootScreen" role="dialog" aria-modal="true" tabindex="-1" aria-live="polite" aria-labelledby="bootTitle" aria-describedby="countdown">
+  <div class="boot-screen" id="bootScreen" role="dialog" aria-modal="true" tabindex="-1" aria-live="polite" aria-labelledby="bootTitle">
     <div class="boot-terminal">
       <div class="boot-title" id="bootTitle">[ KIRLINGER_SYS v2026 ] BOOTING SECURITY INTERFACE...</div>
       <div class="boot-lines" id="bootLines"></div>
@@ -932,8 +932,9 @@
           audioBtn.textContent = "Play Cyber Vibes";
         }
       } catch {
-        const hasSource = Boolean(cyberAudio.getAttribute("src"));
-        popup.textContent = hasSource
+        const source = cyberAudio.getAttribute("src") || "";
+        const hasCustomSource = source.length > 0 && !source.includes("example.com");
+        popup.textContent = hasCustomSource
           ? "Cyber vibes blocked. Use a valid track URL or check browser media permissions."
           : "Add your audio URL to enable cyber vibes.";
         popup.classList.add("show");
