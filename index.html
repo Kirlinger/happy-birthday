@@ -616,7 +616,7 @@
       <h2 class="boot-head">QUANTUM BIRTHDAY OS // KIRLINGER PROFILE</h2>
       <div class="boot-lines" id="bootLines"></div>
       <div class="boot-status">
-        <span id="bootCountdown">T-MINUS 06</span>
+        <span id="bootCountdown">T-MINUS 6</span>
         <span id="bootAccess">Waiting for access...</span>
       </div>
       <div class="progress"><span></span></div>
@@ -768,7 +768,8 @@
         bootIndex += 1;
       }
 
-      bootCountdownEl.textContent = `T-MINUS 0${Math.max(countdown, 0)}`;
+      const countdownValue = Math.max(countdown, 0);
+      bootCountdownEl.textContent = `T-MINUS ${countdownValue}`;
       if (countdown <= 0) {
         bootAccessEl.textContent = 'ACCESS GRANTED // BIRTHDAY PROTOCOL ONLINE';
       }
@@ -781,12 +782,12 @@
     }, 700);
 
     // Hero command-line typing
-    const typingMessage = 'sudo ./launch_birthday_protocol --target=kirlinger --mode=elite';
+    const heroTypingMessage = 'sudo ./launch_birthday_protocol --target=kirlinger --mode=elite';
     let typePointer = 0;
 
     function typeHeroLine() {
-      if (typePointer <= typingMessage.length) {
-        typedTextEl.textContent = typingMessage.slice(0, typePointer);
+      if (typePointer <= heroTypingMessage.length) {
+        typedTextEl.textContent = heroTypingMessage.slice(0, typePointer);
         typePointer += 1;
         setTimeout(typeHeroLine, 52);
       }
@@ -952,7 +953,8 @@
           const dy = node.y - other.y;
           const dist = Math.hypot(dx, dy);
           if (dist < networkLinkDistance) {
-            nCtx.strokeStyle = `rgba(60, 188, 255, ${networkMaxOpacity - dist / networkOpacityFalloff})`;
+            const linkOpacity = Math.max(0, networkMaxOpacity - dist / networkOpacityFalloff);
+            nCtx.strokeStyle = `rgba(60, 188, 255, ${linkOpacity})`;
             nCtx.beginPath();
             nCtx.moveTo(node.x, node.y);
             nCtx.lineTo(other.x, other.y);
