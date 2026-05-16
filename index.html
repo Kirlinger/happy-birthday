@@ -576,7 +576,7 @@
   <div class="scanlines" aria-hidden="true"></div>
   <div class="floating-code" id="floatingCode" aria-hidden="true"></div>
 
-  <div class="boot-screen" id="bootScreen" role="dialog" aria-modal="true" tabindex="-1" aria-live="assertive" aria-labelledby="bootTitle">
+  <div class="boot-screen" id="bootScreen" role="dialog" aria-modal="true" tabindex="-1" aria-live="polite" aria-labelledby="bootTitle">
     <div class="boot-terminal">
       <div class="boot-title" id="bootTitle">[ KIRLINGER_SYS v2026 ] BOOTING SECURITY INTERFACE...</div>
       <div class="boot-lines" id="bootLines"></div>
@@ -664,7 +664,7 @@
     <footer>Cyber Birthday Interface • 2026 Developer Edition</footer>
   </main>
 
-  <audio id="cyberAudio" preload="none" src=""></audio>
+  <audio id="cyberAudio" preload="none"></audio>
 
   <script>
     // Boot sequence and intro timing
@@ -682,8 +682,6 @@
     const initBtn = document.getElementById("initBtn");
     let index = 0;
     let count = 5;
-
-    bootScreen.focus();
 
     const bootTimer = setInterval(() => {
       if (index < bootLines.length) {
