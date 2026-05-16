@@ -580,7 +580,7 @@
     <div class="boot-terminal">
       <div class="boot-title" id="bootTitle">[ KIRLINGER_SYS v2026 ] BOOTING SECURITY INTERFACE...</div>
       <div class="boot-lines" id="bootLines"></div>
-      <div class="countdown" id="countdown">Initializing in 5...</div>
+      <div class="countdown" id="countdown" aria-live="assertive" aria-atomic="true">Initializing in 5...</div>
       <div class="progress"><span></span></div>
     </div>
   </div>
@@ -594,7 +594,7 @@
         <span class="pill">AI Core: Online</span>
         <span class="pill">Threat Level: Zero</span>
       </div>
-      <div class="clock" id="liveClock" aria-live="off">--:--:--</div>
+      <div class="clock" id="liveClock" aria-live="polite" aria-atomic="true">--:--:--</div>
     </header>
 
     <section class="hero" id="hero">
@@ -664,7 +664,7 @@
     <footer>Cyber Birthday Interface • 2026 Developer Edition</footer>
   </main>
 
-  <audio id="cyberAudio" preload="none" aria-label="Background cyber music player"></audio>
+  <audio id="cyberAudio" preload="none" src="https://example.com/replace-with-your-cyber-track.mp3" aria-label="Background cyber music player"></audio>
 
   <script>
     // Boot sequence and intro timing
@@ -683,6 +683,16 @@
     let index = 0;
     let count = 5;
 
+    function lockBootFocus(event) {
+      if (!bootScreen.classList.contains("hidden") && event.key === "Tab") {
+        event.preventDefault();
+        bootScreen.focus();
+      }
+    }
+
+    bootScreen.focus();
+    document.addEventListener("keydown", lockBootFocus);
+
     const bootTimer = setInterval(() => {
       if (index < bootLines.length) {
         const line = document.createElement("div");
@@ -699,6 +709,7 @@
         setTimeout(() => {
           clearInterval(bootTimer);
           bootScreen.classList.add("hidden");
+          document.removeEventListener("keydown", lockBootFocus);
           initBtn.focus();
         }, 900);
       }
@@ -921,7 +932,10 @@
           audioBtn.textContent = "Play Cyber Vibes";
         }
       } catch {
-        popup.textContent = "Add your audio URL to enable cyber vibes.";
+        const hasSource = Boolean(cyberAudio.getAttribute("src"));
+        popup.textContent = hasSource
+          ? "Cyber vibes blocked. Use a valid track URL or check browser media permissions."
+          : "Add your audio URL to enable cyber vibes.";
         popup.classList.add("show");
         setTimeout(() => {
           popup.classList.remove("show");
