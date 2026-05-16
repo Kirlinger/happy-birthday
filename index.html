@@ -576,9 +576,9 @@
   <div class="scanlines" aria-hidden="true"></div>
   <div class="floating-code" id="floatingCode" aria-hidden="true"></div>
 
-  <div class="boot-screen" id="bootScreen" role="dialog" aria-modal="true" tabindex="-1" aria-live="polite" aria-label="System boot intro">
+  <div class="boot-screen" id="bootScreen" role="dialog" aria-modal="true" tabindex="-1" aria-live="assertive" aria-labelledby="bootTitle">
     <div class="boot-terminal">
-      <div class="boot-title">[ KIRLINGER_SYS v2026 ] BOOTING SECURITY INTERFACE...</div>
+      <div class="boot-title" id="bootTitle">[ KIRLINGER_SYS v2026 ] BOOTING SECURITY INTERFACE...</div>
       <div class="boot-lines" id="bootLines"></div>
       <div class="countdown" id="countdown">Initializing in 5...</div>
       <div class="progress"><span></span></div>
@@ -587,7 +587,7 @@
 
   <div class="popup" id="upgradePopup">HAPPY BIRTHDAY KIRLINGER — SYSTEM UPGRADE COMPLETE</div>
 
-  <main class="app" id="appMain" tabindex="-1">
+  <main class="app">
     <header class="topbar">
       <div class="status-group">
         <span class="pill pulse">Network Secure</span>
@@ -637,7 +637,7 @@
 
     <section>
       <h2 class="section-title">FAKE HACKING CONSOLE</h2>
-      <div class="console" id="hackConsole" aria-live="polite"></div>
+      <div class="console" id="hackConsole" aria-live="polite" aria-label="Hacking console output"></div>
       <div class="status-panels">
         <article class="card reveal"><h3>Connection</h3><p>Quantum tunnel stable @ 99.99%</p></article>
         <article class="card reveal"><h3>Server Room</h3><p>Neural node clusters synchronized</p></article>
@@ -664,7 +664,7 @@
     <footer>Cyber Birthday Interface • 2026 Developer Edition</footer>
   </main>
 
-  <audio id="cyberAudio" preload="none" src="https://example.com/replace-with-your-cyber-track.mp3"></audio>
+  <audio id="cyberAudio" preload="none" src=""></audio>
 
   <script>
     // Boot sequence and intro timing
@@ -679,34 +679,11 @@
     const bootContainer = document.getElementById("bootLines");
     const countdown = document.getElementById("countdown");
     const bootScreen = document.getElementById("bootScreen");
-    const appMain = document.getElementById("appMain");
     const initBtn = document.getElementById("initBtn");
-    const bootFocusables = ["button", "[href]", "input", "select", "textarea", "[tabindex]:not([tabindex='-1'])"];
-    let previousFocus = document.activeElement;
     let index = 0;
     let count = 5;
 
-    function trapBootFocus(event) {
-      if (event.key !== "Tab" || bootScreen.classList.contains("hidden")) return;
-      const focusable = [...bootScreen.querySelectorAll(bootFocusables.join(","))].filter((el) => !el.hasAttribute("disabled"));
-      if (!focusable.length) {
-        event.preventDefault();
-        bootScreen.focus();
-        return;
-      }
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    }
-
     bootScreen.focus();
-    document.addEventListener("keydown", trapBootFocus);
 
     const bootTimer = setInterval(() => {
       if (index < bootLines.length) {
@@ -724,12 +701,6 @@
         setTimeout(() => {
           clearInterval(bootTimer);
           bootScreen.classList.add("hidden");
-          document.removeEventListener("keydown", trapBootFocus);
-          if (previousFocus && typeof previousFocus.focus === "function") {
-            previousFocus.focus();
-          } else {
-            appMain.focus();
-          }
           initBtn.focus();
         }, 900);
       }
