@@ -576,7 +576,7 @@
   <div class="scanlines" aria-hidden="true"></div>
   <div class="floating-code" id="floatingCode" aria-hidden="true"></div>
 
-  <div class="boot-screen" id="bootScreen" role="dialog" aria-live="polite" aria-label="System boot intro">
+  <div class="boot-screen" id="bootScreen" role="dialog" aria-modal="true" tabindex="-1" aria-live="polite" aria-label="System boot intro">
     <div class="boot-terminal">
       <div class="boot-title">[ KIRLINGER_SYS v2026 ] BOOTING SECURITY INTERFACE...</div>
       <div class="boot-lines" id="bootLines"></div>
@@ -587,7 +587,7 @@
 
   <div class="popup" id="upgradePopup">HAPPY BIRTHDAY KIRLINGER — SYSTEM UPGRADE COMPLETE</div>
 
-  <main class="app">
+  <main class="app" id="appMain" tabindex="-1">
     <header class="topbar">
       <div class="status-group">
         <span class="pill pulse">Network Secure</span>
@@ -603,8 +603,8 @@
         <h1 class="glitch" data-text="HAPPY BIRTHDAY KIRLINGER">HAPPY BIRTHDAY KIRLINGER</h1>
         <div class="terminal-box typing" id="heroTyping"></div>
         <div class="actions">
-          <button id="initBtn" type="button">INITIALIZE BIRTHDAY MODE</button>
-          <button id="audioBtn" type="button">Play Cyber Vibes</button>
+          <button id="initBtn" type="button" aria-label="Initialize birthday mode with cyber confetti and upgrade effects">INITIALIZE BIRTHDAY MODE</button>
+          <button id="audioBtn" type="button" aria-label="Play or pause optional cyber vibes music">Play Cyber Vibes</button>
         </div>
       </div>
       <div class="live-code cursor" id="liveCode"></div>
@@ -679,8 +679,34 @@
     const bootContainer = document.getElementById("bootLines");
     const countdown = document.getElementById("countdown");
     const bootScreen = document.getElementById("bootScreen");
+    const appMain = document.getElementById("appMain");
+    const initBtn = document.getElementById("initBtn");
+    const bootFocusables = ["button", "[href]", "input", "select", "textarea", "[tabindex]:not([tabindex='-1'])"];
+    let previousFocus = document.activeElement;
     let index = 0;
     let count = 5;
+
+    function trapBootFocus(event) {
+      if (event.key !== "Tab" || bootScreen.classList.contains("hidden")) return;
+      const focusable = [...bootScreen.querySelectorAll(bootFocusables.join(","))].filter((el) => !el.hasAttribute("disabled"));
+      if (!focusable.length) {
+        event.preventDefault();
+        bootScreen.focus();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    bootScreen.focus();
+    document.addEventListener("keydown", trapBootFocus);
 
     const bootTimer = setInterval(() => {
       if (index < bootLines.length) {
@@ -698,6 +724,13 @@
         setTimeout(() => {
           clearInterval(bootTimer);
           bootScreen.classList.add("hidden");
+          document.removeEventListener("keydown", trapBootFocus);
+          if (previousFocus && typeof previousFocus.focus === "function") {
+            previousFocus.focus();
+          } else {
+            appMain.focus();
+          }
+          initBtn.focus();
         }, 900);
       }
     }, 1000);
@@ -875,7 +908,6 @@
     document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
 
     // Action buttons: cyber confetti, matrix burst, popup, and optional audio toggle
-    const initBtn = document.getElementById("initBtn");
     const popup = document.getElementById("upgradePopup");
 
     function cyberBlast() {
