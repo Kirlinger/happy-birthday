@@ -519,6 +519,10 @@
       z-index: 1;
     }
 
+    .floating-code span {
+      display: block;
+    }
+
     @keyframes floatCode {
       0%, 100% { transform: translateY(0); opacity: 0.45; }
       50% { transform: translateY(-6px); opacity: 0.75; }
@@ -633,7 +637,7 @@
 
     <!-- Hero terminal section -->
     <section class="hero reveal" id="hero">
-      <div class="floating-code">01001000 01000010 01000100<br/>if(user===kirlinger){level++;}</div>
+      <div class="floating-code"><span>01001000 01000010 01000100</span><span>if(user===kirlinger){level++;}</span></div>
       <h1 data-text="HAPPY BIRTHDAY KIRLINGER">HAPPY BIRTHDAY KIRLINGER</h1>
       <p class="terminal-line">$ <span id="typedText"></span><span class="cursor"></span></p>
       <div class="code-window" aria-label="Live code animation window">
@@ -736,6 +740,13 @@
     const initButton = document.getElementById('initButton');
     const audioButton = document.getElementById('audioButton');
     const cyberAudio = document.getElementById('cyberAudio');
+    const matrixDropSpeed = 15;
+    const matrixResetVariance = 1000;
+    const networkLinkDistance = 120;
+    const networkMaxOpacity = 0.18;
+    const networkOpacityFalloff = 900;
+    const matrixBurstCount = 240;
+    const matrixBurstMaxY = 50;
 
     // Boot sequence data
     const bootLines = [
@@ -862,7 +873,7 @@
         const text = glyphs[Math.floor(Math.random() * glyphs.length)];
         const x = i * 16;
         mCtx.fillText(text, x, y);
-        columns[i] = y > matrixCanvas.height + Math.random() * 1000 ? 0 : y + 15;
+        columns[i] = y > matrixCanvas.height + Math.random() * matrixResetVariance ? 0 : y + matrixDropSpeed;
       });
       requestAnimationFrame(drawMatrix);
     }
@@ -940,8 +951,8 @@
           const dx = node.x - other.x;
           const dy = node.y - other.y;
           const dist = Math.hypot(dx, dy);
-          if (dist < 120) {
-            nCtx.strokeStyle = `rgba(60, 188, 255, ${0.18 - dist / 900})`;
+          if (dist < networkLinkDistance) {
+            nCtx.strokeStyle = `rgba(60, 188, 255, ${networkMaxOpacity - dist / networkOpacityFalloff})`;
             nCtx.beginPath();
             nCtx.moveTo(node.x, node.y);
             nCtx.lineTo(other.x, other.y);
@@ -997,8 +1008,8 @@
       launchBurst();
 
       // Small matrix burst effect
-      for (let i = 0; i < 240; i++) {
-        columns[Math.floor(Math.random() * columns.length)] = Math.random() * 50;
+      for (let i = 0; i < matrixBurstCount; i++) {
+        columns[Math.floor(Math.random() * columns.length)] = Math.random() * matrixBurstMaxY;
       }
     });
 
@@ -1016,7 +1027,9 @@
           audioPlaying = false;
         }
       } catch (err) {
-        popupMessageEl.textContent = 'Audio source unavailable. Replace placeholder link.';
+        popupMessageEl.textContent = cyberAudio.currentSrc
+          ? 'Audio playback blocked or unsupported. Replace link or allow media playback.'
+          : 'Invalid audio source URL. Replace placeholder link.';
         popupMessageEl.classList.add('show');
         setTimeout(() => {
           popupMessageEl.classList.remove('show');
